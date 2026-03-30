@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    container_name: authentic_tracker_postgres
+    restart: always
+    ports:
+      - "5444:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d authentik"]
+      interval: 10s
+      retries: 5
+      start_period: 15s
+      timeout: 5s
+
+  authentic-backend:
+    build: .
+    container_name: authentic_backend
+    env_file: .env
+    depends_on:
+      - db
+    ports:
+      - "7001:8000"
+    environment:
+      - PORT=8000
+    restart: unless-stopped
