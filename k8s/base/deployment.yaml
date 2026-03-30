@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/krishnarajt/authentic-tracker-backend:latest
+          image: ghcr.io/krishnarajt/authentic-tracker-backend:git-68710ec3bdc1459261d6050c28ed25e4ea55cece
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
