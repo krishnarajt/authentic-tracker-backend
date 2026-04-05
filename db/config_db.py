@@ -24,6 +24,13 @@ async def init_db() -> None:
         await conn.exec_driver_sql(f"CREATE SCHEMA IF NOT EXISTS {DB_SCHEMA}")
         # create tables in the engine's metadata context
         await conn.run_sync(SQLModel.metadata.create_all)
+        # Backward-compatible schema update for existing deployments.
+        await conn.exec_driver_sql(
+            f"""
+            ALTER TABLE {DB_SCHEMA}.gold_purchases
+            ADD COLUMN IF NOT EXISTS description TEXT
+            """
+        )
 
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:

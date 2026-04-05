@@ -23,6 +23,7 @@ class GoldPurchase(Base, table=True):
     date: dt_date  # FastAPI will accept ISO date strings and convert
     pricePerGram: float
     userId: Optional[str] = None  # optional, frontend may send or omit
+    description: Optional[str] = None
 
 
 # Request / update models
@@ -32,6 +33,7 @@ class GoldPurchaseCreate(SQLModel):
     date: dt_date
     pricePerGram: float
     userId: Optional[str] = None
+    description: Optional[str] = None
 
 
 class GoldPurchaseUpdate(SQLModel):
@@ -40,6 +42,7 @@ class GoldPurchaseUpdate(SQLModel):
     date: Optional[dt_date] = None
     pricePerGram: Optional[float] = None
     userId: Optional[str] = None
+    description: Optional[str] = None
 
 
 # --- New: cached gold prices ---
