@@ -1,6 +1,6 @@
 # models.py
 import uuid
-from datetime import date
+from datetime import date as dt_date
 from typing import Optional
 
 from sqlmodel import SQLModel, Field
@@ -20,7 +20,7 @@ class GoldPurchase(Base, table=True):
 
     grams: float
     amountPaid: float
-    date: date  # FastAPI will accept ISO date strings and convert
+    date: dt_date  # FastAPI will accept ISO date strings and convert
     pricePerGram: float
     userId: Optional[str] = None  # optional, frontend may send or omit
 
@@ -29,7 +29,7 @@ class GoldPurchase(Base, table=True):
 class GoldPurchaseCreate(SQLModel):
     grams: float
     amountPaid: float
-    date: date
+    date: dt_date
     pricePerGram: float
     userId: Optional[str] = None
 
@@ -37,7 +37,7 @@ class GoldPurchaseCreate(SQLModel):
 class GoldPurchaseUpdate(SQLModel):
     grams: Optional[float] = None
     amountPaid: Optional[float] = None
-    date: Optional[date] = None
+    date: Optional[dt_date] = None
     pricePerGram: Optional[float] = None
     userId: Optional[str] = None
 
@@ -52,6 +52,6 @@ class GoldPrice(Base, table=True):
     __tablename__ = "gold_prices"
 
     # Primary key on date + currency to support per-currency caching
-    fetch_date: date = Field(primary_key=True, index=True)
+    fetch_date: dt_date = Field(primary_key=True, index=True)
     currency: str = Field(primary_key=True, index=True, max_length=3)
     price_per_gram: float
