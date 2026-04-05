@@ -1,10 +1,15 @@
 # main.py (snippet)
 from contextlib import asynccontextmanager
+import logging
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
+
+logger = logging.getLogger(__name__)
 
 import db.config_db as config_db
 from router.goldRoutes import router as gold_router
@@ -28,6 +33,22 @@ app.add_middleware(CORSMiddleware,
 
 # Mount router under /api so frontend's API_BASE_URL + paths match
 app.include_router(gold_router)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    body = await request.body()
+    logger.warning(
+        "Request validation failed: method=%s path=%s errors=%s body=%s",
+        request.method,
+        request.url.path,
+        exc.errors(),
+        body.decode("utf-8", errors="replace"),
+    )
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": exc.errors()},
+    )
 
 
 # basic healthcheck
